@@ -1,38 +1,18 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/huh/spinner"
 	"github.com/spf13/cobra"
 	t "github.com/vg006/vgo/types"
+	"github.com/vg006/vgo/utils"
 )
 
 func init() {
 	rootCmd.AddCommand(initCmd)
-}
-
-func checkValidProjectName(name string) error {
-	dirs, err := os.ReadDir(".")
-	if err != nil {
-		return err
-	}
-
-	switch name {
-	case "":
-		return errors.New("No null name, sorry")
-	default:
-		for _, dir := range dirs {
-			if dir.Name() == name && dir.IsDir() {
-				return errors.New("Project already exists")
-			}
-		}
-	}
-	return nil
 }
 
 var initCmd = &cobra.Command{
@@ -48,7 +28,7 @@ var initCmd = &cobra.Command{
 					Title("Project Name").
 					Placeholder("Enter the project name").
 					Description("Names the new project").
-					Validate(checkValidProjectName),
+					Validate(utils.CheckValidProjectName),
 			),
 			huh.NewGroup(
 				huh.NewSelect[string]().
