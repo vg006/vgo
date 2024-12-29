@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/charmbracelet/huh"
+	"github.com/charmbracelet/huh/spinner"
 	"github.com/spf13/cobra"
 	app "github.com/vg006/vgo/internal"
 	"github.com/vg006/vgo/internal/utils"
@@ -24,9 +25,20 @@ var initCmd = &cobra.Command{
 				huh.NewInput().
 					Value(&p.Name).
 					Title("Project Name").
-					Placeholder("Enter the project name").
-					Description("Names the new project").
+					Description("Enter the project name").
 					Validate(utils.CheckValidProjectName),
+			),
+			huh.NewGroup(
+				huh.NewInput().
+					Value(&p.ModName).
+					Title("Module Name").
+					Description("Press <Enter> to use the project name").
+					Validate(func(s string) error {
+						if s == "" {
+							p.ModName = p.Name
+						}
+						return nil
+					}),
 			),
 			huh.NewGroup(
 				huh.NewSelect[string]().
@@ -63,23 +75,23 @@ var initCmd = &cobra.Command{
 					Title("Database").
 					Description("Select the database for the project").
 					Options(
-						huh.NewOption("None", "None"),
-						huh.NewOption("PostgreSQL", "PostgreSQL"),
-						huh.NewOption("MySQL", "MySQL"),
-						huh.NewOption("SQLite", "SQLite"),
-						huh.NewOption("MongoDB", "MongoDB"),
+						huh.NewOption("None", "none"),
+						huh.NewOption("PostgreSQL", "postgresql"),
+						huh.NewOption("MySQL", "mysql"),
+						huh.NewOption("SQLite", "sqlite"),
+						huh.NewOption("MongoDB", "mongodb"),
 					),
 				huh.NewNote().DescriptionFunc(func() string {
 					switch p.Database {
-					case "None":
+					case "none":
 						return "No database will be used in the project/ Not decided yet"
-					case "PostgreSQL":
+					case "postgresql":
 						return "The world's most advanced open source database"
-					case "MySQL":
+					case "mysql":
 						return "The world's most popular open source database"
-					case "SQLite":
+					case "sqlite":
 						return "A C-language library that implements a small, fast, self-contained, high-reliability, full-featured, SQL database engine"
-					case "MongoDB":
+					case "mongodb":
 						return "A general purpose, document-based, distributed database built for modern application developers and for the cloud era"
 					default:
 						return ""
@@ -93,8 +105,16 @@ var initCmd = &cobra.Command{
 			fmt.Printf(" Error : Failed to initialize the project\n%s", err.Error())
 		}
 
-		if err = p.ScaffoldProject(); err != nil {
-			fmt.Printf(" Error : Failed to scaffold the project\n%s", err.Error())
+		_ = spinner.
+			New().
+			Title("Scaffolding the project").
+			Accessible(false).
+			Run()
+
+		err = p.ScaffoldProject()
+		if err != nil {
+			fmt.Printf(" Error : Failed to scaffold the project\n%s", err.Error())
 		}
+		fmt.Println(" Project initialized successfully")
 	},
 }

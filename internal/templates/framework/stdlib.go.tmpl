@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	db "{{ returnModName . }}/internal/database"
+    db "{{ returnModName . }}/internal/database"
 )
 
 type Handler struct {
@@ -36,8 +36,8 @@ func (h *Handler) StartServer() error {
 }
 
 func (h *Handler) HealthCheck(w http.ResponseWriter, r *http.Request) {
+	{{ if ne .Database "none" }}
 	w.Header().Set("Content-Type", "application/json")
-
 	err := h.db.HealthCheck()
 	if err != nil {
 		log.Println(err.Error())
@@ -45,7 +45,7 @@ func (h *Handler) HealthCheck(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode("Internal Server Error")
 		return
 	}
-
+    {{ end }}
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode("OK")
 }

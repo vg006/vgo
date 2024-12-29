@@ -60,6 +60,14 @@ func (p *Project) ScaffoldProject() error {
 			return err
 		}
 	}
+
+	// Importing the packages
+	// -----------------------------------------------------------------
+	_, err = exec.Command("go", "mod", "tidy").Output()
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -135,27 +143,29 @@ func (p *Project) CreateInternalDir() {
 	// internal/database
 	// -----------------------------------------------------------------
 	// Creates the database directory
-	dbPath := filepath.Join("internal", "database")
-	err = os.MkdirAll(dbPath, 0754)
-	if err != nil {
-		errChan <- err
-	}
-	// Creates the database.go
-	dbFile, err := os.Create(filepath.Join(dbPath, "database.go"))
-	if err != nil {
-		errChan <- err
-	}
-	defer dbFile.Close()
-	// Writes into dbFile
-	err = template.
-		Must(
-			template.
-				New("database.go").
-				Funcs(Functions).
-				Parse(tmpl.DatabaseTmpl(p.Database))).
-		Execute(dbFile, p)
-	if err != nil {
-		errChan <- err
+	if p.Database != "none" {
+		dbPath := filepath.Join("internal", "database")
+		err = os.MkdirAll(dbPath, 0754)
+		if err != nil {
+			errChan <- err
+		}
+		// Creates the database.go
+		dbFile, err := os.Create(filepath.Join(dbPath, "database.go"))
+		if err != nil {
+			errChan <- err
+		}
+		defer dbFile.Close()
+		// Writes into dbFile
+		err = template.
+			Must(
+				template.
+					New("database.go").
+					Funcs(Functions).
+					Parse(tmpl.DatabaseTmpl(p.Database))).
+			Execute(dbFile, p)
+		if err != nil {
+			errChan <- err
+		}
 	}
 
 	// internal/handlers
@@ -189,5 +199,13 @@ func (p *Project) CreateInternalDir() {
 var Functions = template.FuncMap{
 	"returnModName": func(p *Project) string {
 		return p.ModName
+	},
+	"returnDbInstance": func(db string) string {
+		switch db {
+		case "mongo":
+			return "db := db.New(a.DB_MONGODB_URI, a.DB_NAME, a.DB_COLLECTION)"
+		default:
+			return "db := db.New(a.DB_CONNECTION_STRING)"
+		}
 	},
 }

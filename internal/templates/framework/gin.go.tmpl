@@ -36,11 +36,13 @@ func (h *Handler) StartServer() error {
 }
 
 func (h *Handler) HealthCheck(c *gin.Context) {
+    {{ if ne .Database "none" }}
 	err := h.db.HealthCheck()
 	if err != nil {
 		log.Println(err.Error())
 		c.JSON(500, gin.H{"message": "Internal Server Error"})
 		return
 	}
-	c.JSON(200, gin.H{"message": "OK"})
+    {{ end }}
+    c.JSON(200, gin.H{"message": "OK"})
 }
