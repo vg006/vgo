@@ -143,29 +143,27 @@ func (p *Project) CreateInternalDir() {
 	// internal/database
 	// -----------------------------------------------------------------
 	// Creates the database directory
-	if p.Database != "none" {
-		dbPath := filepath.Join("internal", "database")
-		err = os.MkdirAll(dbPath, 0754)
-		if err != nil {
-			errChan <- err
-		}
-		// Creates the database.go
-		dbFile, err := os.Create(filepath.Join(dbPath, "database.go"))
-		if err != nil {
-			errChan <- err
-		}
-		defer dbFile.Close()
-		// Writes into dbFile
-		err = template.
-			Must(
-				template.
-					New("database.go").
-					Funcs(Functions).
-					Parse(tmpl.DatabaseTmpl(p.Database))).
-			Execute(dbFile, p)
-		if err != nil {
-			errChan <- err
-		}
+	dbPath := filepath.Join("internal", "database")
+	err = os.MkdirAll(dbPath, 0754)
+	if err != nil {
+		errChan <- err
+	}
+	// Creates the database.go
+	dbFile, err := os.Create(filepath.Join(dbPath, "database.go"))
+	if err != nil {
+		errChan <- err
+	}
+	defer dbFile.Close()
+	// Writes into dbFile
+	err = template.
+		Must(
+			template.
+				New("database.go").
+				Funcs(Functions).
+				Parse(tmpl.DatabaseTmpl(p.Database))).
+		Execute(dbFile, p)
+	if err != nil {
+		errChan <- err
 	}
 
 	// internal/handlers
