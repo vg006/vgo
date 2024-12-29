@@ -1,0 +1,46 @@
+package handlers
+
+import (
+	"fmt"
+	"log"
+
+	"github.com/gin-gonic/gin"
+	db "{{ returnModName . }}/internal/database"
+)
+
+type Handler struct {
+	srv *gin.Engine
+	db *db.DB
+}
+
+func New(db *db.DB) *Handler {
+	return &Handler{
+		srv: gin.Default(),
+		db: db,
+	}
+}
+
+func (h *Handler) SetupRoutes() {
+    routes := h.srv.Group("/")
+	h.srv.GET("/health", h.HealthCheck)
+
+	// Add more routes here (E.g.)
+	// h.srv.GET("/hello", h.Hello)
+}
+
+func (h *Handler) StartServer() error {
+    if err := h.srv.Run(); err != nil {
+        return err
+    }
+    return nil
+}
+
+func (h *Handler) HealthCheck(c *gin.Context) {
+	err := h.db.HealthCheck()
+	if err != nil {
+		log.Println(err.Error())
+		c.JSON(500, gin.H{"message": "Internal Server Error"})
+		return
+	}
+	c.JSON(200, gin.H{"message": "OK"})
+}

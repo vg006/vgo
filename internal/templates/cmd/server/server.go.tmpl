@@ -1,0 +1,10 @@
+package main
+
+import (
+    "{{ returnModName . }}/internal/app"
+)
+
+func main() {
+	a := app.NewApp()
+	a.Init()
+}

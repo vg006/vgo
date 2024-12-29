@@ -1,0 +1,43 @@
+package db
+
+import (
+	"database/sql"
+	_ "github.com/lib/pq"
+)
+
+type DB struct {
+	db *sql.DB
+}
+
+func New(connStr string) *DB {
+	db, err := sql.Open("postgres", connStr)
+	if err != nil {
+		return nil
+	}
+
+	err = db.Ping()
+	if err != nil {
+		return nil
+	}
+
+	return &DB{
+		db: db,
+	}
+}
+
+func (d *DB) HealthCheck() error {
+	return d.db.Ping()
+}
+
+// Define any additional methods here, For example...
+// func (d *DB) GetData(ctx context.Context, query string, args ...interface{}) (map[string]interface{}, error) {
+//     result := make(map[string]interface{})
+//
+//     row := d.db.QueryRowContext(ctx, query, args...)
+//     err := row.Scan(&result)
+//     if err != nil {
+//         return nil, err
+//     }
+//
+//     return result, nil
+// }

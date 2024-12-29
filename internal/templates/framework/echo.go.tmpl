@@ -1,0 +1,43 @@
+package handlers
+
+import (
+	"fmt"
+
+	"github.com/labstack/echo/v4"
+	db "{{ returnModName . }}/internal/database"
+)
+
+type Handler struct {
+    srv *echo.Echo
+	db *db.DB
+}
+
+func New(db *db.DB) *Handler {
+	return &Handler{
+	    srv: echo.New(),
+		db: db,
+	}
+}
+
+func (h *Handler) SetupRoutes() {
+    h.srv.GET("/health", h.HealthCheck)
+
+    // Add more routes here (E.g.)
+	// h.srv.GET("/hello", h.Hello)
+}
+
+func (h *Handler) StartServer() error {
+    if err := h.srv.Start(":8000"); err != nil {
+        return err
+    }
+    return nil
+}
+
+func (h *Handler) HealthCheck(e echo.Context) error {
+	err := h.db.HealthCheck()
+	if err != nil {
+		log.Println(err.Error())
+		return e.JSON(500, "Internal Server Error")
+	}
+	return e.JSON(200, "OK")
+}

@@ -1,0 +1,43 @@
+package handlers
+
+import (
+	"fmt"
+
+	"github.com/gofiber/fiber/v2"
+	db "{{ returnModName . }}/internal/database"
+)
+
+type Handler struct {
+    srv *fiber.App
+	db *db.DB
+}
+
+func New(db *db.DB) *Handler {
+	return &Handler{
+		srv: fiber.New(),
+		db: db,
+	}
+}
+
+func (h *Handler) SetupRoutes() {
+	h.srv.Get("/health", h.HealthCheck)
+
+	// Add more routes here (E.g.)
+	// h.srv.Get("/hello", h.Hello)
+}
+
+func (h *Handler) StartServer() error {
+    if err := h.srv.Listen(":3000"), err != nil {
+        return err
+    }
+    return nil
+}
+
+func (h *Handler) HealthCheck(c *fiber.Ctx) error {
+	err := h.db.HealthCheck()
+	if err != nil {
+		log.Println(err.Error())
+		return c.Status(500).JSON("Internal Server Error")
+	}
+	return c.Status(200).JSON("OK")
+}

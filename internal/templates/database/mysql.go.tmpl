@@ -1,0 +1,45 @@
+
+import (
+	"database/sql"
+	_ "github.com/go-sql-driver/mysql"
+)
+
+type DB struct {
+	db *sql.DB
+}
+
+func New(connStr string) *DB {
+	db, err := sql.Open("mysql", connStr)
+	if err != nil {
+		return nil
+	}
+
+	db.SetMaxOpenConns(25)
+	db.SetMaxIdleConns(25)
+    db.SetConnMaxLifetime(5)
+
+	err = db.Ping()
+	if err != nil {
+		return nil
+	}
+
+	return &DB{
+		db: db,
+	}
+}
+
+func (d *DB) HealthCheck() error {
+	return d.db.Ping()
+}
+
+// Define any additional methods here, For example...
+// func (d *DB) GetData(ctx context.Context, id int) (map[string]interface{}, error) {
+//     result := make(map[string]interface{})
+//
+//     row := d.db.QueryRowContext(ctx, "SELECT * FROM data WHERE id = ?", id)
+//     if err := row.Scan(&result); err != nil {
+//         return nil, err
+//     }
+//
+//     return result, nil
+// }

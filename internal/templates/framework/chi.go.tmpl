@@ -1,0 +1,53 @@
+package handlers
+
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+
+	"github.com/go-chi/chi/v5"
+	db "{{ returnModName . }}/internal/database"
+)
+
+type Handler struct {
+	router *chi.Mux
+	db     *db.DB
+}
+
+func New(db *db.DB) *Handler {
+	return &Handler{
+		router: func() *chi.Mux {
+			r := chi.NewRouter()
+			r.Use(middleware.Logger)
+			r.Use(middleware.Recoverer)
+			return r
+		}(),
+		db:     db,
+	}
+}
+
+func (h *Handler) SetupRoutes() {
+	h.router.Get("/health", h.HealthCheck)
+
+	// Add more routes here (E.g.)
+	// h.router.Get("/hello", h.Hello)
+}
+
+func (h *Handler) StartServer() error {
+    if err := http.ListenAndServe(":8080", h.router), err != nil {
+        return err
+    }
+    return nil
+}
+
+func (h *Handler) HealthCheck(w http.ResponseWriter, r *http.Request) {
+	err := h.db.HealthCheck()
+	if err != nil {
+		log.Println(err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode("Internal Server Error")
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode("OK")
+}
