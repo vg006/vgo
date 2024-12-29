@@ -7,31 +7,60 @@ import (
 var (
 	//go:embed app/app.go.tmpl
 	AppTmpl string
-
 	//go:embed cmd/server/server.go.tmpl
 	ServerTmpl string
 
+	// Database Templates
 	//go:embed database/mongo.go.tmpl
 	MongoTmpl string
-
 	//go:embed database/mysql.go.tmpl
 	MySqlTmpl string
-
 	//go:embed database/postgres.go.tmpl
 	PostgresTmpl string
-
 	//go:embed database/sqlite.go.tmpl
 	SqliteTmpl string
 
+	// Handler Templates
+	//go:embed framework/stdlib.go.tmpl
+	StdLibTmpl string
 	//go:embed framework/chi.go.tmpl
 	ChiTmpl string
-
 	//go:embed framework/echo.go.tmpl
 	EchoTmpl string
-
 	////go:embed framework/fiber.go.tmpl
 	FiberTmpl string
-
 	//go:embed framework/gin.go.tmpl
 	GinTmpl string
 )
+
+func DatabaseTmpl(db string) string {
+	switch db {
+	case "mysql":
+		return MySqlTmpl
+	case "postgres":
+		return PostgresTmpl
+	case "sqlite":
+		return SqliteTmpl
+	case "mongo":
+		return MongoTmpl
+	default:
+		return ""
+	}
+}
+
+func HandlerTmpl(handler string) string {
+	switch handler {
+	case "echo":
+		return EchoTmpl
+	case "gin":
+		return GinTmpl
+	case "fiber":
+		return FiberTmpl
+	case "chi":
+		return ChiTmpl
+	case "stdlib":
+		return StdLibTmpl
+	default:
+		return ""
+	}
+}

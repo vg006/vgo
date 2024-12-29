@@ -2,13 +2,11 @@ package cmd
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/charmbracelet/huh"
-	"github.com/charmbracelet/huh/spinner"
 	"github.com/spf13/cobra"
-	t "github.com/vg006/vgo/types"
-	"github.com/vg006/vgo/utils"
+	app "github.com/vg006/vgo/internal"
+	"github.com/vg006/vgo/internal/utils"
 )
 
 func init() {
@@ -19,7 +17,7 @@ var initCmd = &cobra.Command{
 	Use:   "init",
 	Short: "Initialize a new Go project",
 	Run: func(cmd *cobra.Command, args []string) {
-		var p t.Project
+		var p app.Project
 
 		form := huh.NewForm(
 			huh.NewGroup(
@@ -92,14 +90,11 @@ var initCmd = &cobra.Command{
 
 		err := form.Run()
 		if err != nil {
-			fmt.Println(" Error : Failed to initialize the project", err)
+			fmt.Printf(" Error : Failed to initialize the project\n%s", err.Error())
 		}
 
-		scaffoldProject := func() {
-			// Simulate some work
-			time.Sleep(2 * time.Second)
+		if err = p.ScaffoldProject(); err != nil {
+			fmt.Printf(" Error : Failed to scaffold the project\n%s", err.Error())
 		}
-
-		_ = spinner.New().Title("Preparing the project").Action(scaffoldProject).Run()
 	},
 }

@@ -4,9 +4,14 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"sync"
 	"text/template"
 
 	tmpl "github.com/vg006/vgo/internal/templates"
+)
+
+var (
+	errChan = make(chan error, 2)
 )
 
 func (p *Project) ScaffoldProject() error {
@@ -33,12 +38,28 @@ func (p *Project) ScaffoldProject() error {
 	}
 	defer f.Close()
 
+	// Creates other project directories
 	// -----------------------------------------------------------------
 	// Creates the cmd directory
-	go p.CreateCmdDir()
+	var wg sync.WaitGroup
+	wg.Add(2)
+	go func() {
+		defer wg.Done()
+		p.CreateCmdDir()
+	}()
 	// Creates the internal directory
-	go p.CreateInternalDir()
+	go func() {
+		defer wg.Done()
+		p.CreateInternalDir()
+	}()
 
+	wg.Wait()
+	close(errChan)
+	for err := range errChan {
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -46,20 +67,20 @@ func (p *Project) CreateCmdDir() {
 	// Creates the cmd directory
 	err := os.Mkdir("cmd", 0754)
 	if err != nil {
-		panic(err)
+		errChan <- err
 	}
 
 	// Creates the server directory
 	serverPath := filepath.Join("cmd", "server")
 	err = os.MkdirAll(serverPath, 0754)
 	if err != nil {
-		panic(err)
+		errChan <- err
 	}
 
 	// Creates the server.go
 	serverFile, err := os.Create(filepath.Join(serverPath, "server.go"))
 	if err != nil {
-		panic(err)
+		errChan <- err
 	}
 	defer serverFile.Close()
 
@@ -68,11 +89,11 @@ func (p *Project) CreateCmdDir() {
 		Must(
 			template.
 				New("server.go").
-				Funcs(tmpl.Functions).
+				Funcs(Functions).
 				Parse(tmpl.ServerTmpl)).
 		Execute(serverFile, p)
 	if err != nil {
-		panic(err)
+		errChan <- err
 	}
 }
 
@@ -82,7 +103,7 @@ func (p *Project) CreateInternalDir() {
 	// Creates the internal directory
 	err := os.Mkdir("internal", 0754)
 	if err != nil {
-		panic(err)
+		errChan <- err
 	}
 
 	// internal/app
@@ -91,12 +112,12 @@ func (p *Project) CreateInternalDir() {
 	appPath := filepath.Join("internal", "app")
 	err = os.MkdirAll(appPath, 0754)
 	if err != nil {
-		panic(err)
+		errChan <- err
 	}
 	// Creates the app.go
 	appFile, err := os.Create(filepath.Join(appPath, "app.go"))
 	if err != nil {
-		panic(err)
+		errChan <- err
 	}
 	defer appFile.Close()
 	// Writes into appFile
@@ -104,11 +125,11 @@ func (p *Project) CreateInternalDir() {
 		Must(
 			template.
 				New("app.go").
-				Funcs(tmpl.Functions).
+				Funcs(Functions).
 				Parse(tmpl.AppTmpl)).
 		Execute(appFile, p)
 	if err != nil {
-		panic(err)
+		errChan <- err
 	}
 
 	// internal/database
@@ -117,12 +138,12 @@ func (p *Project) CreateInternalDir() {
 	dbPath := filepath.Join("internal", "database")
 	err = os.MkdirAll(dbPath, 0754)
 	if err != nil {
-		panic(err)
+		errChan <- err
 	}
 	// Creates the database.go
 	dbFile, err := os.Create(filepath.Join(dbPath, "database.go"))
 	if err != nil {
-		panic(err)
+		errChan <- err
 	}
 	defer dbFile.Close()
 	// Writes into dbFile
@@ -130,11 +151,11 @@ func (p *Project) CreateInternalDir() {
 		Must(
 			template.
 				New("database.go").
-				Funcs(tmpl.Functions).
+				Funcs(Functions).
 				Parse(tmpl.DatabaseTmpl(p.Database))).
 		Execute(dbFile, p)
 	if err != nil {
-		panic(err)
+		errChan <- err
 	}
 
 	// internal/handlers
@@ -143,12 +164,12 @@ func (p *Project) CreateInternalDir() {
 	handlersPath := filepath.Join("internal", "handlers")
 	err = os.MkdirAll(handlersPath, 0754)
 	if err != nil {
-		panic(err)
+		errChan <- err
 	}
 	// Creates the handlers.go
 	handlersFile, err := os.Create(filepath.Join(handlersPath, "handlers.go"))
 	if err != nil {
-		panic(err)
+		errChan <- err
 	}
 	defer handlersFile.Close()
 	// Writes into handlersFile
@@ -156,11 +177,17 @@ func (p *Project) CreateInternalDir() {
 		Must(
 			template.
 				New("handlers.go").
-				Funcs(tmpl.Functions).
+				Funcs(Functions).
 				Parse(tmpl.HandlerTmpl(p.FrameWork))).
 		Execute(handlersFile, p)
 	if err != nil {
-		panic(err)
+		errChan <- err
 	}
 	// -----------------------------------------------------------------
+}
+
+var Functions = template.FuncMap{
+	"returnModName": func(p *Project) string {
+		return p.ModName
+	},
 }
