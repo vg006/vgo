@@ -6,32 +6,32 @@ import (
 
 var (
 	//go:embed app/app.go.tmpl
-	AppTmpl []byte
+	AppTmpl string
 
 	//go:embed cmd/server/server.go.tmpl
-	ServerTmpl []byte
+	ServerTmpl string
 
 	//go:embed database/mongo.go.tmpl
-	MongoTmpl []byte
+	MongoTmpl string
 
 	//go:embed database/mysql.go.tmpl
-	MySqlTmpl []byte
+	MySqlTmpl string
 
 	//go:embed database/postgres.go.tmpl
-	PostgresTmpl []byte
+	PostgresTmpl string
 
 	//go:embed database/sqlite.go.tmpl
-	SqliteTmpl []byte
+	SqliteTmpl string
 
 	//go:embed framework/chi.go.tmpl
-	ChiTmpl []byte
+	ChiTmpl string
 
 	//go:embed framework/echo.go.tmpl
-	EchoTmpl []byte
+	EchoTmpl string
 
 	////go:embed framework/fiber.go.tmpl
-	FiberTmpl []byte
+	FiberTmpl string
 
 	//go:embed framework/gin.go.tmpl
-	GinTmpl []byte
+	GinTmpl string
 )
