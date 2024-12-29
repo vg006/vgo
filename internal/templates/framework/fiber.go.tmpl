@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/gofiber/fiber/v2"
-	db "{{ returnModName . }}/internal/database"
+	db "{{- .ModName -}}/internal/database"
 )
 
 type Handler struct {
@@ -42,5 +42,6 @@ func (h *Handler) HealthCheck(c *fiber.Ctx) error {
 		return c.Status(500).JSON("Internal Server Error")
 	}
 	{{ end }}
+	log.Println("Health check passed")
 	return c.Status(200).JSON("OK")
 }

@@ -86,6 +86,13 @@ func (p *Project) ScaffoldProject() error {
 		return err
 	}
 
+	// Formatting the project
+	// -----------------------------------------------------------------
+	_, err = exec.Command("go", "fmt", "./...").Output()
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -115,7 +122,6 @@ func (p *Project) CreateCmdDir() {
 		Must(
 			template.
 				New("server.go").
-				Funcs(Functions).
 				Parse(tmpl.ServerTmpl)).
 		Execute(serverFile, p)
 	if err != nil {
@@ -151,7 +157,6 @@ func (p *Project) CreateInternalDir() {
 		Must(
 			template.
 				New("app.go").
-				Funcs(Functions).
 				Parse(tmpl.AppTmpl)).
 		Execute(appFile, p)
 	if err != nil {
@@ -177,7 +182,6 @@ func (p *Project) CreateInternalDir() {
 		Must(
 			template.
 				New("database.go").
-				Funcs(Functions).
 				Parse(tmpl.DatabaseTmpl(p.Database))).
 		Execute(dbFile, p)
 	if err != nil {
@@ -203,27 +207,10 @@ func (p *Project) CreateInternalDir() {
 		Must(
 			template.
 				New("handlers.go").
-				Funcs(Functions).
 				Parse(tmpl.HandlerTmpl(p.FrameWork))).
 		Execute(handlersFile, p)
 	if err != nil {
 		errChan <- err
 	}
 	// -----------------------------------------------------------------
-}
-
-var Functions = template.FuncMap{
-	"returnModName": func(p *Project) string {
-		return p.ModName
-	},
-	"returnDbInstance": func(db string) string {
-		switch db {
-		case "mongo":
-			return "db := db.New(a.DB_MONGODB_URI, a.DB_NAME, a.DB_COLLECTION)"
-		case "none":
-			return "db := db.New()"
-		default:
-			return "db := db.New(a.DB_CONNECTION_STRING)"
-		}
-	},
 }

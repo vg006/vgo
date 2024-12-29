@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/labstack/echo/v4"
-	db "{{ returnModName . }}/internal/database"
+	db "{{- .ModName -}}/internal/database"
 )
 
 type Handler struct {
@@ -42,5 +42,6 @@ func (h *Handler) HealthCheck(e echo.Context) error {
 		return e.JSON(500, "Internal Server Error")
 	}
 	{{ end }}
+	log.Println("Health check passed")
 	return e.JSON(200, "OK")
 }

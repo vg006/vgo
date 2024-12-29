@@ -1,13 +1,11 @@
 package app
 
 import (
-	"fmt"
 	"log"
 	"os"
-	"time"
 
-	db "{{ returnModName . }}/internal/database"
-	"{{ returnModName . }}/internal/handlers"
+	db "{{- .ModName -}}/internal/database"
+	"{{- .ModName -}}/internal/handlers"
 	"github.com/joho/godotenv"
 )
 
@@ -58,12 +56,20 @@ func (a *App) SetupEnv() {
 }
 
 func (a *App) SetupServer() {
-    {{ returnDbInstance .Database }}
+    {{ if ne .Database "none" }}
+    {{ if eq .Database "mongodb" }}
+	db := db.New(a.Env.DB_MONGODB_URI, a.Env.DB_NAME, a.Env.DB_COLLECTION)
+    {{ else }}
+    db := db.New(a.Env.DB_CONNECTION_STRING)
+    {{ end }}
+    {{ else }}
+    db := db.New()
+    {{ end }}
     h := handlers.New(db)
     h.SetupRoutes()
 
     err := h.StartServer()
     if err != nil {
-        fmt.Sprintf("Error Starting Server:\nMessage:\n%v", err.Error())
+        log.Printf("Error Starting Server:\nMessage:\n%v", err.Error())
     }
 }

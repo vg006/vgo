@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	db "{{ returnModName . }}/internal/database"
+	db "{{- .ModName -}}/internal/database"
 )
 
 type Handler struct {
@@ -20,7 +20,6 @@ func New(db *db.DB) *Handler {
 }
 
 func (h *Handler) SetupRoutes() {
-    routes := h.srv.Group("/")
 	h.srv.GET("/health", h.HealthCheck)
 
 	// Add more routes here (E.g.)
@@ -44,5 +43,6 @@ func (h *Handler) HealthCheck(c *gin.Context) {
 		return
 	}
     {{ end }}
+    log.Println("Health check passed")
     c.JSON(200, gin.H{"message": "OK"})
 }

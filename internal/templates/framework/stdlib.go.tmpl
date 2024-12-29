@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-    db "{{ returnModName . }}/internal/database"
+    db "{{- .ModName -}}/internal/database"
 )
 
 type Handler struct {
@@ -46,6 +46,7 @@ func (h *Handler) HealthCheck(w http.ResponseWriter, r *http.Request) {
 		return
 	}
     {{ end }}
+    log.Println("Health check passed")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode("OK")
 }
