@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/labstack/echo/v4"
 	db "{{ returnModName . }}/internal/database"
@@ -27,7 +27,8 @@ func (h *Handler) SetupRoutes() {
 }
 
 func (h *Handler) StartServer() error {
-    if err := h.srv.Start(":8000"); err != nil {
+    err := h.srv.Start(":8000")
+    if err != nil {
         return err
     }
     return nil
@@ -37,7 +38,7 @@ func (h *Handler) HealthCheck(e echo.Context) error {
 	{{ if ne .Database "none" }}
 	err := h.db.HealthCheck()
 	if err != nil {
-		log.Println(err.Error())
+		log.Fatal(err)
 		return e.JSON(500, "Internal Server Error")
 	}
 	{{ end }}

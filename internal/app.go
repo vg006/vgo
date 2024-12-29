@@ -15,12 +15,13 @@ var (
 )
 
 func (p *Project) ScaffoldProject() error {
+	// Initiating the scaffolding ...
+	// -----------------------------------------------------------------
 	// Creates the project root directory
 	err := os.Mkdir(p.Name, 0754)
 	if err != nil {
 		return err
 	}
-	// -----------------------------------------------------------------
 	// Changes the directory to the project root
 	err = os.Chdir(p.Name)
 	if err != nil {
@@ -37,6 +38,23 @@ func (p *Project) ScaffoldProject() error {
 		return err
 	}
 	defer f.Close()
+
+	// Creates .env file
+	f, err = os.Create(".env")
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	// Writes into the .env file
+	err = template.
+		Must(
+			template.
+				New(".env").
+				Parse(tmpl.EnvTmpl)).
+		Execute(f, p)
+	if err != nil {
+		return err
+	}
 
 	// Creates other project directories
 	// -----------------------------------------------------------------
@@ -203,7 +221,7 @@ var Functions = template.FuncMap{
 		case "mongo":
 			return "db := db.New(a.DB_MONGODB_URI, a.DB_NAME, a.DB_COLLECTION)"
 		case "none":
-			return ""
+			return "db := db.New()"
 		default:
 			return "db := db.New(a.DB_CONNECTION_STRING)"
 		}

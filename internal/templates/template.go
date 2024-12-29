@@ -9,6 +9,8 @@ var (
 	AppTmpl string
 	//go:embed cmd/server/server.go.tmpl
 	ServerTmpl string
+	//go:embed files/env.tmpl
+	EnvTmpl string
 
 	// Database Templates
 	//go:embed database/mongo.go.tmpl

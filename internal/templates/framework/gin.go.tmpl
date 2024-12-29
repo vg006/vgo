@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -29,7 +28,8 @@ func (h *Handler) SetupRoutes() {
 }
 
 func (h *Handler) StartServer() error {
-    if err := h.srv.Run(); err != nil {
+    err := h.srv.Run()
+    if err != nil {
         return err
     }
     return nil
@@ -39,7 +39,7 @@ func (h *Handler) HealthCheck(c *gin.Context) {
     {{ if ne .Database "none" }}
 	err := h.db.HealthCheck()
 	if err != nil {
-		log.Println(err.Error())
+		log.Fatal(err)
 		c.JSON(500, gin.H{"message": "Internal Server Error"})
 		return
 	}

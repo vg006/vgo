@@ -1,7 +1,7 @@
 package app
 
 import (
-	"context"
+	"fmt"
 	"log"
 	"os"
 	"time"
@@ -12,6 +12,10 @@ import (
 )
 
 type App struct {
+    Env *Env
+}
+
+type Env struct {
 	API_SERVER_PORT            string
 	{{ if ne .Database "none" }}
 	{{ if eq .Database "mongodb" }}
@@ -19,7 +23,7 @@ type App struct {
 	DB_MONGODB_DB_NAME         string
 	DB_MONGODB_COLLECTION_NAME string
 	{{ else }}
-	DB_CONNECTION_STRING       time.Duration
+	DB_CONNECTION_STRING       string
 	{{ end }}
 	{{ end }}
 }
@@ -60,6 +64,6 @@ func (a *App) SetupServer() {
 
     err := h.StartServer()
     if err != nil {
-        fmt.Errorf("Error Starting Server:\nMessage:\n%v", err.Error())
+        fmt.Sprintf("Error Starting Server:\nMessage:\n%v", err.Error())
     }
 }

@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -34,7 +34,8 @@ func (h *Handler) SetupRoutes() {
 }
 
 func (h *Handler) StartServer() error {
-    if err := http.ListenAndServe(":8080", h.router), err != nil {
+    err := http.ListenAndServe(":8080", h.router)
+    if err != nil {
         return err
     }
     return nil
@@ -44,7 +45,7 @@ func (h *Handler) HealthCheck(w http.ResponseWriter, r *http.Request) {
 	{{ if ne .Database "none" }}
 	err := h.db.HealthCheck()
 	if err != nil {
-		log.Println(err.Error())
+		log.Fatal(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode("Internal Server Error")
 		return
