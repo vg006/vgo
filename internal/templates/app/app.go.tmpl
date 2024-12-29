@@ -13,9 +13,15 @@ import (
 
 type App struct {
 	API_SERVER_PORT            string
+	{{ if ne .Database "none" }}
+	{{ if eq .Database "mongodb" }}
 	DB_MONGODB_URL             string
-	DB_MONDODB_DB_NAME         string
+	DB_MONGODB_DB_NAME         string
 	DB_MONGODB_COLLECTION_NAME string
+	{{ else }}
+	DB_CONNECTION_STRING       time.Duration
+	{{ end }}
+	{{ end }}
 }
 
 func NewApp() *App {
@@ -34,7 +40,16 @@ func (a *App) SetupEnv() {
 	}
 
 	a.Env = &Env{
-		API_SERVER_PORT: os.Getenv("API_SERVER_PORT"),
+		API_SERVER_PORT:            os.Getenv("API_SERVER_PORT"),
+		{{ if ne .Database "none" }}
+        {{ if eq .Database "mongodb" }}
+        DB_MONGODB_URL:             os.Getenv("DB_MONGODB_URL"),
+        DB_MONGODB_DB_NAME:         os.Getenv("DB_MONGODB_DB_NAME"),
+        DB_MONGODB_COLLECTION_NAME: os.Getenv("DB_MONGODB_COLLECTION_NAME"),
+        {{ else }}
+        DB_CONNECTION_STRING:       os.Getenv("DB_CONNECTION_STRING"),
+        {{ end }}
+        {{ end }}
 	}
 }
 
@@ -42,7 +57,9 @@ func (a *App) SetupServer() {
     {{ returnDbInstance .Database }}
     h := handlers.New(db)
     h.SetupRoutes()
-    if err := h.StartServer(), err != nil {
+
+    err := h.StartServer()
+    if err != nil {
         fmt.Errorf("Error Starting Server:\nMessage:\n%v", err.Error())
     }
 }

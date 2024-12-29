@@ -204,6 +204,8 @@ var Functions = template.FuncMap{
 		switch db {
 		case "mongo":
 			return "db := db.New(a.DB_MONGODB_URI, a.DB_NAME, a.DB_COLLECTION)"
+		case "none":
+			return ""
 		default:
 			return "db := db.New(a.DB_CONNECTION_STRING)"
 		}

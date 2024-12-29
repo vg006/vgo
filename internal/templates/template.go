@@ -19,6 +19,8 @@ var (
 	PostgresTmpl string
 	//go:embed database/sqlite.go.tmpl
 	SqliteTmpl string
+	//go:embed database/none.go.tmpl
+	NoneTmpl string
 
 	// Handler Templates
 	//go:embed framework/stdlib.go.tmpl
@@ -44,7 +46,7 @@ func DatabaseTmpl(db string) string {
 	case "mongo":
 		return MongoTmpl
 	default:
-		return ""
+		return NoneTmpl
 	}
 }
 
