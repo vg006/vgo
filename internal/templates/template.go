@@ -41,7 +41,7 @@ func DatabaseTmpl(db string) string {
 	switch db {
 	case "mysql":
 		return MySqlTmpl
-	case "postgres":
+	case "postgresql":
 		return PostgresTmpl
 	case "sqlite":
 		return SqliteTmpl

@@ -109,12 +109,15 @@ var initCmd = &cobra.Command{
 			New().
 			Title("Scaffolding the project").
 			Accessible(false).
+			Action(func() {
+				err = p.ScaffoldProject()
+				if err != nil {
+					fmt.Printf(" Error : Failed to scaffold the project\n%s", err.Error())
+					p.RevertScaffold()
+				} else {
+					fmt.Println(" Project initialized successfully")
+				}
+			}).
 			Run()
-
-		err = p.ScaffoldProject()
-		if err != nil {
-			fmt.Printf(" Error : Failed to scaffold the project\n%s", err.Error())
-		}
-		fmt.Println(" Project initialized successfully")
 	},
 }

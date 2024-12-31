@@ -33,7 +33,7 @@ func (p *Project) ScaffoldProject() error {
 		return err
 	}
 	// Creates a Readme.md File
-	f, err := os.Create("Readme.md")
+	f, err := os.Create("README.md")
 	if err != nil {
 		return err
 	}
@@ -213,4 +213,17 @@ func (p *Project) CreateInternalDir() {
 		errChan <- err
 	}
 	// -----------------------------------------------------------------
+}
+
+func (p *Project) RevertScaffold() error {
+	// Reverting the scaffolding ...
+	err := os.Chdir("..")
+	if err != nil {
+		return err
+	}
+	err = os.RemoveAll(p.Name)
+	if err != nil {
+		return err
+	}
+	return nil
 }
