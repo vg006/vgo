@@ -93,7 +93,7 @@ var initCmd = &cobra.Command{
 
 		err := form.Run()
 		if err != nil {
-			fmt.Println(asset.Text.Foreground(asset.Red).Render(" Hey! Why stopped? "))
+			fmt.Println(asset.Text.Foreground(asset.Red).Render(" Hey! Why stopped?"))
 			return
 		}
 
@@ -111,7 +111,7 @@ var initCmd = &cobra.Command{
 						fmt.Println(asset.Text.Foreground(asset.Red).Render(" Reverted the scaffold"))
 					}
 				} else {
-					fmt.Println(asset.Text.Foreground(asset.Green).Render(" Project initialized successfully"))
+					fmt.Println(asset.Text.Foreground(asset.Green).Render(fmt.Sprintf(" Project \"%s\" initialized successfully", p.Name)))
 				}
 			}).
 			Style(asset.Text).
