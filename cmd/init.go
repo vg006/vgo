@@ -1,14 +1,15 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
+	"os"
 
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/huh/spinner"
 	"github.com/spf13/cobra"
 	app "github.com/vg006/vgo/internal"
 	asset "github.com/vg006/vgo/internal/assets"
-	"github.com/vg006/vgo/internal/utils"
 )
 
 func init() {
@@ -27,7 +28,24 @@ var initCmd = &cobra.Command{
 					Value(&p.Name).
 					Title("Project Name").
 					Description("Enter the project name").
-					Validate(utils.CheckValidProjectName),
+					Validate(func(name string) error {
+						dirs, err := os.ReadDir(".")
+						if err != nil {
+							return err
+						}
+
+						switch name {
+						case "":
+							return errors.New("Hehe nice try! Enter a project name")
+						default:
+							for _, dir := range dirs {
+								if dir.Name() == name && dir.IsDir() {
+									return errors.New("Directory already exists!")
+								}
+							}
+						}
+						return nil
+					}),
 			),
 			huh.NewGroup(
 				huh.NewInput().
