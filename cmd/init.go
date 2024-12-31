@@ -7,6 +7,7 @@ import (
 	"github.com/charmbracelet/huh/spinner"
 	"github.com/spf13/cobra"
 	app "github.com/vg006/vgo/internal"
+	asset "github.com/vg006/vgo/internal/assets"
 	"github.com/vg006/vgo/internal/utils"
 )
 
@@ -32,7 +33,7 @@ var initCmd = &cobra.Command{
 				huh.NewInput().
 					Value(&p.ModName).
 					Title("Module Name").
-					Description("Press <Enter> to use the project name").
+					Description("Enter a name of the module\nPress <Enter> to use the same as project name").
 					Validate(func(s string) error {
 						if s == "" {
 							p.ModName = p.Name
@@ -52,22 +53,6 @@ var initCmd = &cobra.Command{
 						huh.NewOption("Chi", "chi"),
 						huh.NewOption("Gin", "gin"),
 					),
-				huh.NewNote().DescriptionFunc(func() string {
-					switch p.FrameWork {
-					case "stdlib":
-						return "The standard library for building web applications in Go"
-					case "echo":
-						return "A high performance, extensible, minimalist web framework for Go"
-					case "fiber":
-						return "An Express inspired web framework for Go"
-					case "chi":
-						return "A lightweight, idiomatic and composable router for building Go HTTP services"
-					case "gin":
-						return "A web framework written in Go (Golang)"
-					default:
-						return ""
-					}
-				}, &p.FrameWork),
 			),
 			huh.NewGroup(
 				huh.NewSelect[string]().
@@ -81,43 +66,38 @@ var initCmd = &cobra.Command{
 						huh.NewOption("SQLite", "sqlite"),
 						huh.NewOption("MongoDB", "mongodb"),
 					),
-				huh.NewNote().DescriptionFunc(func() string {
-					switch p.Database {
-					case "none":
-						return "No database will be used in the project/ Not decided yet"
-					case "postgresql":
-						return "The world's most advanced open source database"
-					case "mysql":
-						return "The world's most popular open source database"
-					case "sqlite":
-						return "A C-language library that implements a small, fast, self-contained, high-reliability, full-featured, SQL database engine"
-					case "mongodb":
-						return "A general purpose, document-based, distributed database built for modern application developers and for the cloud era"
-					default:
-						return ""
-					}
-				}, &p.Database),
 			),
-		).WithAccessible(false)
+		).
+			WithAccessible(false).
+			WithTheme(asset.SetTheme())
+
+		fmt.Println(asset.VgoLogo)
 
 		err := form.Run()
 		if err != nil {
-			fmt.Printf(" Error : Failed to initialize the project\n%s", err.Error())
+			fmt.Println(asset.Text.Foreground(asset.Red).Render(" Hey! Why stopped? "))
+			return
 		}
 
 		_ = spinner.
 			New().
 			Title("Scaffolding the project").
-			Accessible(false).
 			Action(func() {
 				err = p.ScaffoldProject()
 				if err != nil {
-					fmt.Printf(" Error : Failed to scaffold the project\n%s", err.Error())
-					p.RevertScaffold()
+					fmt.Println(asset.Text.Foreground(asset.Red).Render(" Error : Sorry! Failed to scaffold the project"))
+					res := p.RevertScaffold()
+					if res != nil {
+						fmt.Println(asset.Text.Foreground(asset.Red).Render(" Error : Failed to revert the scaffold"))
+					} else {
+						fmt.Println(asset.Text.Foreground(asset.Red).Render(" Reverted the scaffold"))
+					}
 				} else {
-					fmt.Println(" Project initialized successfully")
+					fmt.Println(asset.Text.Foreground(asset.Green).Render(" Project initialized successfully"))
 				}
 			}).
+			Style(asset.Text).
+			Accessible(false).
 			Run()
 	},
 }
