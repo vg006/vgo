@@ -1,8 +1,8 @@
-# 📟 Vgo
+# 💻 Vgo
 
 ## 📝 Overview
 
-Vgo is a simple go project scaffolding tool with user-friendly command-line interface written in Go. It helps developers streamline the creation of Go projects by dynamically generating scaffolding based on user-defined inputs. This tool saves time, ensures consistent project structure, and improves development efficiency.
+Vgo is a simple go project scaffolding tool with user-friendly command-line interface written in Go. This tool saves time, ensures consistent project structure, and improves development efficiency.
 
 > **NOTE** : This is my first open source contribution. I hope this tool will be useful to many developers and help them in their projects. I am open to feedback and suggestions to improve this tool further.
 This is the first version of the tool and I will be adding more features and improvements in the future.
@@ -64,8 +64,6 @@ go install github.com/vg006/vgo@latest
 
 ## 🛠️ Usage
 
-### Examples
-
 **Initialize a new project with default settings**:
 ```bash
 vgo init
@@ -110,5 +108,6 @@ If you encounter any issues or have questions, feel free to open an issue on [Gi
 
 Special thanks to,
 - the Go community, for their invaluable resources and inspiration.
-- [Cobra CLI](https://github.com/spf13/cobra), for creating user-friendly command-line interface.
+- [MelkeyDev](https://github.com/MelkeyDev), for the inspiration to build this tool.
+- [Cobra CLI](https://github.com/spf13/cobra), for helping to build command-line interface.
 - [Charm_](https://github.com/charmbracelet), for building beautiful and interactive CLI components.
