@@ -31,7 +31,7 @@ This is the list of features that I am planning to add in the future. I will be 
 ## ⬇️ Installation
 
 ### Prerequisites
-- [Go](https://golang.org/dl/) (Version 1.23.0 or higher is recommended)
+- [Go](https://golang.org/dl/) (Version 1.23.3 or higher is recommended)
 
 ### 1. Using `go install`
 
