@@ -207,7 +207,7 @@ func (p *Project) CreateInternalDir() {
 		Must(
 			template.
 				New("handlers.go").
-				Parse(tmpl.HandlerTmpl(p.FrameWork))).
+				Parse("package handlers\n\n"+tmpl.HandlerTmpl(p.FrameWork))).
 		Execute(handlersFile, p)
 	if err != nil {
 		errChan <- err
