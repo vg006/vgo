@@ -31,7 +31,7 @@ var (
 	ChiTmpl string
 	//go:embed framework/echo.go.tmpl
 	EchoTmpl string
-	////go:embed framework/fiber.go.tmpl
+	//go:embed framework/fiber.go.tmpl
 	FiberTmpl string
 	//go:embed framework/gin.go.tmpl
 	GinTmpl string
