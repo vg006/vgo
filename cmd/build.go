@@ -35,7 +35,7 @@ var buildCmd = &cobra.Command{
 			New().
 			Title("Installing vgo ...").
 			Action(func() {
-				_, err = exec.Command("go", "install").Output()
+				_, err := exec.Command("go", "install").Output()
 				if err != nil {
 					cmd.Printf("%s Error : Failed to update the vgo tool", asset.EmojiError)
 					return
