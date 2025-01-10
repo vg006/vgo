@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"os/exec"
 
 	"github.com/charmbracelet/huh/spinner"
@@ -16,34 +17,50 @@ var buildCmd = &cobra.Command{
 	Use:   "build",
 	Short: "Build the vgo tool and install it",
 	Run: func(cmd *cobra.Command, args []string) {
+		flag := true
 		_ = spinner.
 			New().
-			Title("Building vgo ...").
+			Title("Building").
 			Action(func() {
 				_, err := exec.Command("go", "build").Output()
 				if err != nil {
-					cmd.Printf("%s Error : Failed to update the vgo tool", asset.EmojiError)
-					return
+					flag = false
 				}
-				cmd.Printf("%s Built", asset.EmojiTick)
+
 			}).
 			Style(asset.Text).
 			Accessible(false).
 			Run()
 
+		if flag {
+			cmd.Println(asset.Text.Foreground(asset.Green).
+				Render(fmt.Sprintf("%s Built vgo", asset.EmojiTick)))
+		} else {
+			cmd.Println(asset.Text.Foreground(asset.Red).
+				Render(fmt.Sprintf("%s Error : Failed to build the vgo tool\n%s", asset.EmojiError, err)))
+			return
+		}
+
 		_ = spinner.
 			New().
-			Title("Installing vgo ...").
+			Title("Installing").
 			Action(func() {
 				_, err := exec.Command("go", "install").Output()
 				if err != nil {
-					cmd.Printf("%s Error : Failed to update the vgo tool", asset.EmojiError)
-					return
+					flag = false
 				}
-				cmd.Printf("%s Installed", asset.EmojiTick)
 			}).
 			Style(asset.Text).
 			Accessible(false).
 			Run()
+
+		if flag {
+			cmd.Println(asset.Text.Foreground(asset.Green).
+				Render(fmt.Sprintf("%s Installed vgo", asset.EmojiTick)))
+		} else {
+			cmd.Println(asset.Text.Foreground(asset.Red).
+				Render(fmt.Sprintf("%s Error : Failed to update the vgo tool\n%s", asset.EmojiError, err)))
+			return
+		}
 	},
 }
