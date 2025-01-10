@@ -6,6 +6,7 @@ import (
 )
 
 var (
+	// Colors
 	NormalFg  = lipgloss.AdaptiveColor{Light: "235", Dark: "252"}
 	LightBlue = lipgloss.AdaptiveColor{Light: "#35FCDC", Dark: "#00d0ff"}
 	DarkBlue  = lipgloss.AdaptiveColor{Light: "#04FAD3", Dark: "#4BCBE7"}
@@ -16,6 +17,12 @@ var (
 	Fuchsia = lipgloss.Color("#F780E2")
 	Green   = lipgloss.AdaptiveColor{Light: "#0dff00", Dark: "#0dff00"}
 	Red     = lipgloss.AdaptiveColor{Light: "#FF4672", Dark: "#ED567A"}
+
+	// Emojis
+	EmojiSparkles = "\U00002728" // ✨
+	EmojiError    = "\U0000274C" // ❌
+	EmojiTick     = "\U00002705" // ✅
+	EmojiThumbsUp = "\U0001F44D" // 👍
 
 	VgoLogo = lipgloss.NewStyle().
 		Foreground(LightBlue).
