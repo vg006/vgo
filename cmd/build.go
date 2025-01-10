@@ -28,7 +28,7 @@ var buildCmd = &cobra.Command{
 				cmd.Printf("%s Built", asset.EmojiTick)
 			}).
 			Style(asset.Text).
-			Accessible(true).
+			Accessible(false).
 			Run()
 
 		_ = spinner.
@@ -43,7 +43,7 @@ var buildCmd = &cobra.Command{
 				cmd.Printf("%s Installed", asset.EmojiTick)
 			}).
 			Style(asset.Text).
-			Accessible(true).
+			Accessible(false).
 			Run()
 	},
 }
