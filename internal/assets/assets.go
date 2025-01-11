@@ -21,7 +21,7 @@ var (
 	// Emojis
 	EmojiSparkles = "\U00002728" // ✨
 	EmojiError    = "\U0000274C" // ❌
-	EmojiTick     = "\U00002705" // ✅
+	EmojiTick     = "\U00002714" // ✔
 	EmojiThumbsUp = "\U0001F44D" // 👍
 	EmojiConfused = "\U0001F615" // 😕
 

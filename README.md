@@ -64,10 +64,21 @@ go install github.com/vg006/vgo@latest
 
 ## 🛠️ Usage
 
-**Initialize a new project with default settings**:
-```bash
-vgo init
-```
+1. **Initialize a new project**:
+   ```bash
+   vgo init
+   ```
+2. **To update the tool**:
+   ```bash
+   vgo up
+   ```
+3. **To Build and Install the binary**:
+   > **NOTE**: This command is only for development purposes.
+   It builds the binary file of the tool and install it.
+   ```bash
+   vgo build
+   ```
+
 
 ### Available Flags
 
