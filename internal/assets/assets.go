@@ -23,6 +23,7 @@ var (
 	EmojiError    = "\U0000274C" // ❌
 	EmojiTick     = "\U00002705" // ✅
 	EmojiThumbsUp = "\U0001F44D" // 👍
+	EmojiConfused = "\U0001F615" // 😕
 
 	VgoLogo = lipgloss.NewStyle().
 		Foreground(LightBlue).

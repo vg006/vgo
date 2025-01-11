@@ -93,7 +93,8 @@ var initCmd = &cobra.Command{
 
 		err := form.Run()
 		if err != nil {
-			fmt.Println(asset.Text.Foreground(asset.Red).Render(" Hey! Why stopped?"))
+			fmt.Println(asset.Text.Foreground(asset.Red).
+				Render(fmt.Sprintf("%s Hey! Why stopped?", asset.EmojiConfused)))
 			return
 		}
 
@@ -103,15 +104,19 @@ var initCmd = &cobra.Command{
 			Action(func() {
 				err = p.ScaffoldProject()
 				if err != nil {
-					fmt.Println(asset.Text.Foreground(asset.Red).Render(" Error : Sorry! Failed to scaffold the project"))
+					fmt.Println(asset.Text.Foreground(asset.Red).
+						Render(fmt.Sprintf("%s Error : Sorry! Failed to scaffold the project", asset.EmojiError)))
 					res := p.RevertScaffold()
 					if res != nil {
-						fmt.Println(asset.Text.Foreground(asset.Red).Render(" Error : Failed to revert the scaffold"))
+						fmt.Println(asset.Text.Foreground(asset.Red).
+							Render(fmt.Sprintf("%s Error : Failed to revert the scaffold", asset.EmojiError)))
 					} else {
-						fmt.Println(asset.Text.Foreground(asset.Red).Render(" Reverted the scaffold"))
+						fmt.Println(asset.Text.Foreground(asset.Red).
+							Render(fmt.Sprintf("%s Reverted the scaffold", asset.EmojiTick)))
 					}
 				} else {
-					fmt.Println(asset.Text.Foreground(asset.Green).Render(fmt.Sprintf(" Project \"%s\" initialized successfully", p.Name)))
+					fmt.Println(asset.Text.Foreground(asset.Green).
+						Render(fmt.Sprintf("%s Project \"%s\" initialized successfully", asset.EmojiTick, p.Name)))
 				}
 			}).
 			Style(asset.Text).
