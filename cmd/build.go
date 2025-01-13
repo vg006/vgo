@@ -17,7 +17,9 @@ var buildCmd = &cobra.Command{
 	Use:   "build",
 	Short: "Build the vgo tool and install it",
 	Run: func(cmd *cobra.Command, args []string) {
+		var err error
 		flag := true
+
 		_ = spinner.
 			New().
 			Title("Building").
