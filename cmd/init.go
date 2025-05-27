@@ -49,6 +49,12 @@ var initCmd = &cobra.Command{
 			),
 			huh.NewGroup(
 				huh.NewInput().
+					Value(&p.Description).
+					Title("Description").
+					Description("Enter a description"),
+			),
+			huh.NewGroup(
+				huh.NewInput().
 					Value(&p.ModName).
 					Title("Module Name").
 					Description("Enter a name of the module\nPress <Enter> to use the same as project name").

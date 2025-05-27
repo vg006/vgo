@@ -11,6 +11,8 @@ var (
 	ServerTmpl string
 	//go:embed files/env.tmpl
 	EnvTmpl string
+	//go:embed files/readme.md.tmpl
+	ReadmeMdTmpl string
 
 	// Database Templates
 	//go:embed database/mongo.go.tmpl
