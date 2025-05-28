@@ -37,7 +37,16 @@ func (p *Project) ScaffoldProject() error {
 	if err != nil {
 		return err
 	}
+
 	defer f.Close()
+
+	err = template.
+		Must(
+			template.New("README.md").Parse(tmpl.ReadmeMdTmpl)).
+		Execute(f, p)
+	if err != nil {
+		errChan <- err
+	}
 
 	// Creates .env file
 	f, err = os.Create(".env")

@@ -3,10 +3,11 @@ package app
 import "fmt"
 
 type Project struct {
-	Name      string
-	ModName   string
-	FrameWork string
-	Database  string
+	Name        string
+	Description string
+	ModName     string
+	FrameWork   string
+	Database    string
 }
 
 type AppError struct {

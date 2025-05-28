@@ -96,20 +96,23 @@ This project is licensed under the [MIT License](LICENSE).
 
 Contributions are welcome! Please follow these steps:
 
-1. Fork the repository.
-2. Create a new branch:
+1. Fork the repository. Clone the repository.
+2. Create a new branch and install dependencies:
    ```bash
    git checkout -b feature/your-feature
+   go mod tidy
    ```
-3. Commit your changes:
+3. Format using `gofmt` to ensure it adheres to Go style guidelines.
+
+4. Commit your changes with clear commit message:
    ```bash
    git commit -m "Add your feature"
    ```
-4. Push the branch:
+5. Push the branch:
    ```bash
    git push origin feature/your-feature
    ```
-5. Open a pull request.
+6. Open a pull request.
 
 ## 💪 Support
 
