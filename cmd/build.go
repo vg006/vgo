@@ -24,7 +24,7 @@ var buildCmd = &cobra.Command{
 			New().
 			Title("Building").
 			Action(func() {
-				_, err := exec.Command("go", "build").Output()
+				_, err = exec.Command("go", "build").CombinedOutput()
 				if err != nil {
 					flag = false
 				}
@@ -39,7 +39,7 @@ var buildCmd = &cobra.Command{
 				Render(fmt.Sprintf("%s Built vgo", asset.EmojiTick)))
 		} else {
 			cmd.Println(asset.Text.Foreground(asset.Red).
-				Render(fmt.Sprintf("%s Error : Failed to build the vgo tool\n%s", asset.EmojiError, err)))
+				Render(fmt.Sprintf("%s Error : Failed to build the vgo tool\n%v", asset.EmojiError, err)))
 			return
 		}
 
@@ -47,7 +47,7 @@ var buildCmd = &cobra.Command{
 			New().
 			Title("Installing").
 			Action(func() {
-				_, err := exec.Command("go", "install").Output()
+				_, err = exec.Command("go", "install").CombinedOutput()
 				if err != nil {
 					flag = false
 				}
@@ -61,7 +61,7 @@ var buildCmd = &cobra.Command{
 				Render(fmt.Sprintf("%s Installed vgo", asset.EmojiTick)))
 		} else {
 			cmd.Println(asset.Text.Foreground(asset.Red).
-				Render(fmt.Sprintf("%s Error : Failed to update the vgo tool\n%s", asset.EmojiError, err)))
+				Render(fmt.Sprintf("%s Error : Failed to update the vgo tool\n%v", asset.EmojiError, err)))
 			return
 		}
 	},
