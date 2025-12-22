@@ -12,16 +12,12 @@ import (
 	asset "github.com/vg006/vgo/internal/assets"
 )
 
-func init() {
-	rootCmd.AddCommand(initCmd)
-}
-
 var initCmd = &cobra.Command{
 	Use:   "init",
 	Short: "Initialize a new Go project",
 	Run: func(cmd *cobra.Command, args []string) {
 		var p app.Project
-
+		accessible, _ := cmd.Flags().GetBool("accessible")
 		form := huh.NewForm(
 			huh.NewGroup(
 				huh.NewInput().
@@ -92,7 +88,7 @@ var initCmd = &cobra.Command{
 					),
 			),
 		).
-			WithAccessible(false).
+			WithAccessible(accessible).
 			WithTheme(asset.SetTheme())
 
 		fmt.Println(asset.VgoLogo)
@@ -126,7 +122,7 @@ var initCmd = &cobra.Command{
 				}
 			}).
 			Style(asset.Text).
-			Accessible(false).
+			Accessible(accessible).
 			Run()
 	},
 }

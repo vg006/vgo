@@ -9,14 +9,11 @@ import (
 	asset "github.com/vg006/vgo/internal/assets"
 )
 
-func init() {
-	rootCmd.AddCommand(buildCmd)
-}
-
 var buildCmd = &cobra.Command{
 	Use:   "build",
 	Short: "Build the vgo tool and install it",
 	Run: func(cmd *cobra.Command, args []string) {
+		accessible, _ := cmd.Flags().GetBool("accessible")
 		var (
 			err        error
 			flag       = true
@@ -35,7 +32,7 @@ var buildCmd = &cobra.Command{
 
 			}).
 			Style(asset.Text).
-			Accessible(false).
+			Accessible(accessible).
 			Run()
 
 		if flag {
@@ -57,7 +54,7 @@ var buildCmd = &cobra.Command{
 				}
 			}).
 			Style(asset.Text).
-			Accessible(false).
+			Accessible(accessible).
 			Run()
 
 		if flag {

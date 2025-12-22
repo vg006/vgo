@@ -9,14 +9,11 @@ import (
 	asset "github.com/vg006/vgo/internal/assets"
 )
 
-func init() {
-	rootCmd.AddCommand(updateCmd)
-}
-
 var updateCmd = &cobra.Command{
 	Use:   "up",
 	Short: "Update the vgo tool to the latest version",
 	Run: func(cmd *cobra.Command, args []string) {
+		accessible, _ := cmd.Flags().GetBool("accessible")
 		_ = spinner.
 			New().
 			Title("Updating vgo ...").
@@ -32,7 +29,7 @@ var updateCmd = &cobra.Command{
 						Render(fmt.Sprintf("%s Yupee! You are now up-to-date!", asset.EmojiSparkles)))
 			}).
 			Style(asset.Text).
-			Accessible(false).
+			Accessible(accessible).
 			Run()
 	},
 }
