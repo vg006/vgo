@@ -13,6 +13,8 @@ var (
 	EnvTmpl string
 	//go:embed files/readme.md.tmpl
 	ReadmeMdTmpl string
+	//go:embed files/gitignore.tmpl
+	GitignoreTmpl string
 
 	// Database Templates
 	//go:embed database/mongo.go.tmpl
