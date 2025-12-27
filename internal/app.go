@@ -32,7 +32,8 @@ func (p *Project) ScaffoldProject() error {
 	if err != nil {
 		return err
 	}
-	// Creates a Readme.md File
+
+	// Creates README.md
 	f, err := os.Create("README.md")
 	if err != nil {
 		return err
@@ -54,7 +55,7 @@ func (p *Project) ScaffoldProject() error {
 		return err
 	}
 	defer f.Close()
-	// Writes into the .env file
+	// Writes into .env
 	err = template.
 		Must(
 			template.
@@ -62,7 +63,24 @@ func (p *Project) ScaffoldProject() error {
 				Parse(tmpl.EnvTmpl)).
 		Execute(f, p)
 	if err != nil {
+		errChan <- err
+	}
+
+	// Creates .gitignore file
+	f, err = os.Create(".gitignore")
+	if err != nil {
 		return err
+	}
+	defer f.Close()
+	// Writes into .gitignore file
+	err = template.
+		Must(
+			template.
+				New(".gitignore").
+				Parse(tmpl.GitignoreTmpl)).
+		Execute(f, p)
+	if err != nil {
+		errChan <- err
 	}
 
 	// Creates other project directories

@@ -19,8 +19,9 @@ var rootCmd = &cobra.Command{
 	},
 }
 
-// --- Executes the command ---
 func Execute() {
+	rootCmd.AddCommand(initCmd, updateCmd, buildCmd)
+	rootCmd.PersistentFlags().BoolP("accessible", "a", false, "Set accessibility for screen reader compatibility")
 	err := rootCmd.Execute()
 	if err != nil {
 		os.Exit(1)

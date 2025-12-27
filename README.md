@@ -5,9 +5,10 @@
 Vgo is a simple go project scaffolding tool with user-friendly command-line interface written in Go. This tool saves time, ensures consistent project structure, and improves development efficiency.
 
 > **NOTE** : This is my first open source contribution. I hope this tool will be useful to many developers and help them in their projects. I am open to feedback and suggestions to improve this tool further.
-This is the first version of the tool and I will be adding more features and improvements in the future.
+> This is the first version of the tool and I will be adding more features and improvements in the future.
 
 ## 🚀 Demo
+
 ![Demo](./demo.gif)
 
 See it is that simple to create a new project with vgo. Just run the command `vgo init` and answer the questions to create a new project.
@@ -31,6 +32,7 @@ This is the list of features that I am planning to add in the future. I will be 
 ## ⬇️ Installation
 
 ### Prerequisites
+
 - [Go](https://golang.org/dl/) (Version 1.23.3 or higher is recommended)
 
 ### 1. Using `go install`
@@ -42,20 +44,22 @@ go install github.com/vg006/vgo@latest
 ### 2. Building from Source
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/vg006/vgo.git
    cd vgo
    ```
 
 2. Build the binary:
+
    ```bash
-   go build -o vgo
+   go build
    ```
 
 3. Install the binary to your Go bin directory:
    ```bash
     go install
-    ```
+   ```
    (or)
    Add the binary to your PATH:
    ```bash
@@ -74,19 +78,17 @@ go install github.com/vg006/vgo@latest
    ```
 3. **To Build and Install the binary**:
    > **NOTE**: This command is only for development purposes.
-   It builds the binary file of the tool and install it.
+   > It builds the binary file of the tool and install it.
    ```bash
    vgo build
    ```
 
-
 ### Available Flags
 
-| Flag            | Description                                         |
-|-----------------|-----------------------------------------------------|
-| `--help`        | Display help information.                           |
-
-
+| Flag           | Short Flag | Description                                        |
+| -------------- | ---------- | -------------------------------------------------- |
+| `--help`       | `-h`       | Display help information.                          |
+| `--accessible` | `-a`       | Set accessibility for screen reader compatibility. |
 
 ## 📄 License
 
@@ -103,7 +105,9 @@ Contributions are welcome! Please follow these steps:
    go mod tidy
    ```
 3. Format using `gofmt` to ensure it adheres to Go style guidelines.
-
+   ``` bash
+   gofmt -w .
+   ```
 4. Commit your changes with clear commit message:
    ```bash
    git commit -m "Add your feature"
@@ -121,7 +125,8 @@ If you encounter any issues or have questions, feel free to open an issue on [Gi
 ## 🙏 Acknowledgments
 
 Special thanks to,
+
 - the Go community, for their invaluable resources and inspiration.
 - [MelkeyDev](https://github.com/MelkeyDev), for the inspiration to build this tool.
 - [Cobra CLI](https://github.com/spf13/cobra), for helping to build command-line interface.
-- [Charm_](https://github.com/charmbracelet), for building beautiful and interactive CLI components.
+- [Charm\_](https://github.com/charmbracelet), for building beautiful and interactive CLI components.
