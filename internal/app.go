@@ -7,6 +7,7 @@ import (
 	"sync"
 	"text/template"
 
+	"github.com/vg006/vgo/internal/license"
 	tmpl "github.com/vg006/vgo/internal/templates"
 )
 
@@ -81,6 +82,20 @@ func (p *Project) ScaffoldProject() error {
 		Execute(f, p)
 	if err != nil {
 		errChan <- err
+	}
+
+	// Creates LICENSE file if a license is selected
+	if p.License != "" && p.License != "none" {
+		licenseContent, err := license.GetLicenseContent(p.License)
+		if err != nil {
+			errChan <- err
+		} else {
+			renderedLicense := license.RenderLicense(licenseContent, p.Author, p.Year)
+			err = os.WriteFile("LICENSE", []byte(renderedLicense), 0644)
+			if err != nil {
+				errChan <- err
+			}
+		}
 	}
 
 	// Creates other project directories

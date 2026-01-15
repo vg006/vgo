@@ -8,6 +8,9 @@ type Project struct {
 	ModName     string
 	FrameWork   string
 	Database    string
+	License     string
+	Author      string
+	Year        string
 }
 
 type AppError struct {
