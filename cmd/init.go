@@ -1,12 +1,13 @@
 package cmd
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"os"
 
-	"github.com/charmbracelet/huh"
-	"github.com/charmbracelet/huh/spinner"
+	"charm.land/huh/v2"
+	"charm.land/huh/v2/spinner"
 	"github.com/spf13/cobra"
 	app "github.com/vg006/vgo/internal"
 	asset "github.com/vg006/vgo/internal/assets"
@@ -89,40 +90,39 @@ var initCmd = &cobra.Command{
 			),
 		).
 			WithAccessible(accessible).
-			WithTheme(asset.SetTheme())
+			WithTheme(huh.ThemeFunc(asset.SetTheme))
 
 		fmt.Println(asset.VgoLogo)
 
 		err := form.Run()
 		if err != nil {
-			fmt.Println(asset.Text.Foreground(asset.Red).
+			fmt.Println(asset.Text.Foreground(asset.Red).Bold(true).
 				Render(fmt.Sprintf("%s Hey! Why stopped?", asset.EmojiConfused)))
 			return
 		}
 
-		_ = spinner.
+		err = spinner.
 			New().
 			Title("Scaffolding the project").
-			Action(func() {
-				err = p.ScaffoldProject()
-				if err != nil {
-					fmt.Println(asset.Text.Foreground(asset.Red).
-						Render(fmt.Sprintf("%s Error : Sorry! Failed to scaffold the project", asset.EmojiError)))
-					res := p.RevertScaffold()
-					if res != nil {
-						fmt.Println(asset.Text.Foreground(asset.Red).
-							Render(fmt.Sprintf("%s Error : Failed to revert the scaffold", asset.EmojiError)))
-					} else {
-						fmt.Println(asset.Text.Foreground(asset.Red).
-							Render(fmt.Sprintf("%s Reverted the scaffold", asset.EmojiTick)))
-					}
-				} else {
-					fmt.Println(asset.Text.Foreground(asset.Green).
-						Render(fmt.Sprintf("%s Project \"%s\" initialized successfully", asset.EmojiTick, p.Name)))
-				}
+			ActionWithErr(func(ctx context.Context) error {
+				return p.ScaffoldProject()
 			}).
-			Style(asset.Text).
-			Accessible(accessible).
+			WithTheme(spinner.ThemeFunc(asset.SetSpinnerTheme)).
 			Run()
+		if err != nil {
+			fmt.Println(asset.Text.Foreground(asset.Red).
+				Render(fmt.Sprintf("%s Error : Sorry! Failed to scaffold the project", asset.EmojiError)))
+			res := p.RevertScaffold()
+			if res != nil {
+				fmt.Println(asset.Text.Foreground(asset.Red).
+					Render(fmt.Sprintf("%s Error : Failed to revert the scaffold", asset.EmojiError)))
+			} else {
+				fmt.Println(asset.Text.Foreground(asset.Red).
+					Render(fmt.Sprintf("%s Reverted the scaffold", asset.EmojiTick)))
+			}
+		} else {
+			fmt.Println(asset.Text.Foreground(asset.Green).
+				Render(fmt.Sprintf("%s Project \"%s\" initialized successfully", asset.EmojiTick, p.Name)))
+		}
 	},
 }
