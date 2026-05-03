@@ -15,25 +15,18 @@ var (
 )
 
 func (p *Project) ScaffoldProject() error {
-	// Initiating the scaffolding ...
-	// -----------------------------------------------------------------
-	// Creates the project root directory
-	err := os.Mkdir(p.Name, 0754)
-	if err != nil {
-		return err
-	}
-	// Changes the directory to the project root
-	err = os.Chdir(p.Name)
-	if err != nil {
-		return err
-	}
-	// Initiates the project module
-	_, err = exec.Command("go", "mod", "init", p.ModName).Output()
-	if err != nil {
+	if err := os.Mkdir(p.Name, 0754); err != nil {
 		return err
 	}
 
-	// Creates README.md
+	if err := os.Chdir(p.Name); err != nil {
+		return err
+	}
+
+	if _, err := exec.Command("go", "mod", "init", p.ModName).Output(); err != nil {
+		return err
+	}
+
 	f, err := os.Create("README.md")
 	if err != nil {
 		return err
@@ -49,13 +42,12 @@ func (p *Project) ScaffoldProject() error {
 		errChan <- err
 	}
 
-	// Creates .env file
 	f, err = os.Create(".env")
 	if err != nil {
 		return err
 	}
 	defer f.Close()
-	// Writes into .env
+
 	err = template.
 		Must(
 			template.
@@ -66,13 +58,12 @@ func (p *Project) ScaffoldProject() error {
 		errChan <- err
 	}
 
-	// Creates .gitignore file
 	f, err = os.Create(".gitignore")
 	if err != nil {
 		return err
 	}
 	defer f.Close()
-	// Writes into .gitignore file
+
 	err = template.
 		Must(
 			template.
@@ -83,16 +74,13 @@ func (p *Project) ScaffoldProject() error {
 		errChan <- err
 	}
 
-	// Creates other project directories
-	// -----------------------------------------------------------------
-	// Creates the cmd directory
 	var wg sync.WaitGroup
 	wg.Add(2)
 	go func() {
 		defer wg.Done()
 		p.CreateCmdDir()
 	}()
-	// Creates the internal directory
+
 	go func() {
 		defer wg.Done()
 		p.CreateInternalDir()
@@ -106,17 +94,11 @@ func (p *Project) ScaffoldProject() error {
 		}
 	}
 
-	// Importing the packages
-	// -----------------------------------------------------------------
-	_, err = exec.Command("go", "mod", "tidy").Output()
-	if err != nil {
+	if _, err = exec.Command("go", "mod", "tidy").Output(); err != nil {
 		return err
 	}
 
-	// Formatting the project
-	// -----------------------------------------------------------------
-	_, err = exec.Command("go", "fmt", "./...").Output()
-	if err != nil {
+	if _, err = exec.Command("go", "fmt", "./...").Output(); err != nil {
 		return err
 	}
 
@@ -124,27 +106,23 @@ func (p *Project) ScaffoldProject() error {
 }
 
 func (p *Project) CreateCmdDir() {
-	// Creates the cmd directory
 	err := os.Mkdir("cmd", 0754)
 	if err != nil {
 		errChan <- err
 	}
 
-	// Creates the server directory
 	serverPath := filepath.Join("cmd", "server")
 	err = os.MkdirAll(serverPath, 0754)
 	if err != nil {
 		errChan <- err
 	}
 
-	// Creates the server.go
 	serverFile, err := os.Create(filepath.Join(serverPath, "server.go"))
 	if err != nil {
 		errChan <- err
 	}
 	defer serverFile.Close()
 
-	// Writes into serverFile
 	err = template.
 		Must(
 			template.
@@ -157,29 +135,23 @@ func (p *Project) CreateCmdDir() {
 }
 
 func (p *Project) CreateInternalDir() {
-	// internal
-	// -----------------------------------------------------------------
-	// Creates the internal directory
 	err := os.Mkdir("internal", 0754)
 	if err != nil {
 		errChan <- err
 	}
 
-	// internal/app
-	// -----------------------------------------------------------------
-	// Creates the app directory
 	appPath := filepath.Join("internal", "app")
 	err = os.MkdirAll(appPath, 0754)
 	if err != nil {
 		errChan <- err
 	}
-	// Creates the app.go
+
 	appFile, err := os.Create(filepath.Join(appPath, "app.go"))
 	if err != nil {
 		errChan <- err
 	}
 	defer appFile.Close()
-	// Writes into appFile
+
 	err = template.
 		Must(
 			template.
@@ -190,21 +162,18 @@ func (p *Project) CreateInternalDir() {
 		errChan <- err
 	}
 
-	// internal/database
-	// -----------------------------------------------------------------
-	// Creates the database directory
 	dbPath := filepath.Join("internal", "database")
 	err = os.MkdirAll(dbPath, 0754)
 	if err != nil {
 		errChan <- err
 	}
-	// Creates the database.go
+
 	dbFile, err := os.Create(filepath.Join(dbPath, "database.go"))
 	if err != nil {
 		errChan <- err
 	}
 	defer dbFile.Close()
-	// Writes into dbFile
+
 	err = template.
 		Must(
 			template.
@@ -215,21 +184,18 @@ func (p *Project) CreateInternalDir() {
 		errChan <- err
 	}
 
-	// internal/handlers
-	// -----------------------------------------------------------------
-	// Creates the handlers directory
 	handlersPath := filepath.Join("internal", "handlers")
 	err = os.MkdirAll(handlersPath, 0754)
 	if err != nil {
 		errChan <- err
 	}
-	// Creates the handlers.go
+
 	handlersFile, err := os.Create(filepath.Join(handlersPath, "handlers.go"))
 	if err != nil {
 		errChan <- err
 	}
 	defer handlersFile.Close()
-	// Writes into handlersFile
+
 	err = template.
 		Must(
 			template.
@@ -239,17 +205,14 @@ func (p *Project) CreateInternalDir() {
 	if err != nil {
 		errChan <- err
 	}
-	// -----------------------------------------------------------------
 }
 
 func (p *Project) RevertScaffold() error {
-	// Reverting the scaffolding ...
-	err := os.Chdir("..")
-	if err != nil {
+	if err := os.Chdir(".."); err != nil {
 		return err
 	}
-	err = os.RemoveAll(p.Name)
-	if err != nil {
+
+	if err := os.RemoveAll(p.Name); err != nil {
 		return err
 	}
 	return nil
